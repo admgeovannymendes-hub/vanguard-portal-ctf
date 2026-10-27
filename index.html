@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanguard L&O - Internal Gateway</title>
+    <!-- Carregando Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonte com estilo de terminal -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados para o efeito Matrix/Terminal */
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #050505;
+            color: #00ff00;
+            overflow: hidden;
+        }
+
+        /* Efeito de scanline de monitores CRT antigos */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0) 50%,
+                rgba(0, 0, 0, 0.2) 50%,
+                rgba(0, 0, 0, 0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Container do terminal com efeito de brilho */
+        .terminal-box {
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2), inset 0 0 15px rgba(0, 255, 0, 0.1);
+            background-color: rgba(0, 20, 0, 0.8);
+        }
+
+        /* Inputs de formulário com estilo hacker */
+        input {
+            background-color: transparent !important;
+            border: none;
+            border-bottom: 1px dashed #00ff00;
+            color: #00ff00 !important;
+            outline: none;
+            box-shadow: none !important;
+        }
+        
+        input:focus {
+            border-bottom: 1px solid #00ff00;
+            box-shadow: 0 4px 6px -1px rgba(0, 255, 0, 0.2) !important;
+        }
+
+        input::placeholder {
+            color: rgba(0, 255, 0, 0.4);
+        }
+
+        /* Botão pulsante */
+        .btn-glitch:hover {
+            background-color: #00ff00;
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 15px #00ff00;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Animação de piscar do cursor */
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center relative p-4">
+
+    <!-- FLAG 1: Escondida nos comentários do código-fonte -->
+    <!-- TODO: Remove debug flag before production: CTF{html_c0mm3nt_f0und} -->
+    <!-- DEVELOPER NOTE: Ensure MRP endpoints are secured before Friday's deployment. -->
+
+    <div class="scanlines"></div>
+
+    <main class="terminal-box w-full max-w-lg p-8 relative z-10 rounded-sm">
+        
+        <!-- Cabeçalho do Portal -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold tracking-wider mb-2">VANGUARD L&O</h1>
+            <h2 class="text-sm uppercase tracking-widest opacity-80 border-b border-green-800 pb-4">
+                Supply Chain & MRP Internal Gateway <span class="cursor-blink">_</span>
+            </h2>
+        </div>
+
+        <!-- Mensagem do Sistema -->
+        <div class="mb-6 text-sm opacity-90">
+            <p>> SYS_MSG: Unauthorized access is strictly prohibited.</p>
+            <p>> SYS_MSG: All connections are logged and monitored.</p>
+            <p>> Awaiting authentication...</p>
+        </div>
+
+        <!-- Formulário de Login Falso -->
+        <form id="loginForm" class="flex flex-col space-y-6">
+            <div class="flex flex-col">
+                <label for="username" class="mb-1 text-xs opacity-70">EMPLOYEE_ID // USERNAME</label>
+                <input type="text" id="username" placeholder="e.g. VANG-8492" class="p-2 transition-all" autocomplete="off">
+            </div>
+
+            <div class="flex flex-col">
+                <label for="password" class="mb-1 text-xs opacity-70">ACCESS_CODE // PASSWORD</label>
+                <input type="password" id="password" placeholder="********" class="p-2 transition-all">
+            </div>
+
+            <button type="submit" class="btn-glitch border border-green-500 text-green-500 uppercase tracking-widest py-3 mt-4 hover:bg-green-500 hover:text-black transition-colors">
+                [ Initialize Session ]
+            </button>
+            
+            <div id="statusMessage" class="text-red-500 text-center text-sm h-4 mt-2 hidden">
+                > ERR 401: Invalid credentials. Intrusion logged.
+            </div>
+        </form>
+
+        <!-- FLAG 2: Escondida via CSS (display: none) -->
+        <!-- O aluno precisa inspecionar a árvore do DOM (Elements) para encontrá-la -->
+        <div style="display:none;" id="secret-key" aria-hidden="true">
+            CTF{css_d1spl4y_h1dd3n}
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="fixed bottom-4 left-0 w-full text-center text-xs opacity-50 z-10 pointer-events-none">
+        Vanguard Logistics & Operations © 2026. Secure Mainframe v2.4.1
+    </footer>
+
+    <script>
+        // Lógica do formulário para evitar recarregamento e mostrar erro
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const status = document.getElementById('statusMessage');
+            status.classList.remove('hidden');
+            
+            // Pisca a mensagem de erro
+            setTimeout(() => { status.classList.add('hidden'); }, 400);
+            setTimeout(() => { status.classList.remove('hidden'); }, 600);
+            setTimeout(() => { status.classList.add('hidden'); }, 800);
+            setTimeout(() => { status.classList.remove('hidden'); }, 1000);
+        });
+
+        // FLAG 3: Escondida no Console codificada em Base64
+        // A string 'Q1RGe2o0djRzY3IxcHRfYzBuczBsM19tNHN0M3J9' é 'CTF{j4v4scr1pt_c0ns0l3_m4st3r}' em base64.
+        // Se usássemos btoa('CTF{...}') diretamente aqui, a flag ficaria visível em texto claro no código fonte.
+        console.log("%c[SYSTEM INIT] Vanguard L&O MRP Modules Loaded.", "color: #00ff00; font-family: monospace; font-size: 14px;");
+        console.log("%c[WARNING] Dev mode active. Do not share session tokens.", "color: #ffaa00; font-family: monospace; font-size: 14px;");
+        
+        // Esta é a linha que os alunos verão no console
+        console.log("Auth token [ENCRYPTED]:", "Q1RGe2o0djRzY3IxcHRfYzBuczBsM19tNHN0M3J9");
+        console.log("Hint: Token uses standard 64-character encoding schema.");
+    </script>
+</body>
+</html>
